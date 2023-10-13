@@ -1,0 +1,85 @@
+/*清除所有默认间距*/
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/*默认背景色*/
+html,
+body {
+  background: #ffffff;
+}
+
+/*让所有斜体不倾斜*/
+em,
+i {
+  font-style: normal;
+}
+
+/*去掉列表默认样式*/
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+/*图⽚没有边框 去掉图⽚底侧的空⽩缝隙*/
+img {
+  border: 0;
+  /*ie6*/
+  vertical-align: middle;
+}
+
+/*让button 按钮 变成⼩⼿*/
+button {
+  border: none;
+  cursor: pointer;
+}
+
+/*取消超链接的下划线*/
+a {
+  text-decoration: none;
+}
+
+/*按钮及输入框默认字体样式*/
+button,
+input {
+  font-family: PingFang SC;
+  outline: none;
+  border: none;
+}
+
+/*隐藏标签*/
+.hide,
+.none {
+  display: none;
+}
+
+/*使⽤after伪元素清除浮动*/
+.clearfix:after {
+  visibility: hidden;
+  clear: both;
+  display: block;
+  content: " ";
+  height: 0;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+/*IE6,7*/
+/*使⽤双伪元素清楚浮动*/
+.clearfix:bofore,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
