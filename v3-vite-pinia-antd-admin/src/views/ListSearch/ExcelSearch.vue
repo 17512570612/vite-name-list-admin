@@ -124,7 +124,7 @@ const handleUpload = () => {
         loading.value = false;
         uploading.value = false;
         router.push("/ScanDetails");
-    }, 3000);
+    }, 3000)
 };
 
 </script>

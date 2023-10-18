@@ -2,7 +2,7 @@
     <div class="search-box">
         <a-form labelAlign="right" :labelCol="{ span: 8 }">
             <div class="flex jc-sb">
-                <a-button type="primary" class="mb-10" @click="handleCreate">
+                <a-button class="mb-10" @click="handleCreate">
                     <template #icon>
                         <PlusOutlined />
                     </template>
@@ -10,12 +10,12 @@
                 </a-button>
                 <div class="flex">
                     <a-form-item label="代码">
-                        <a-input placeholder="请输入代码" allowClear />
+                        <a-input placeholder="请输入代码" v-model:value="queryForm.code" allowClear />
                     </a-form-item>
                     <a-form-item label="值">
-                        <a-input placeholder="请输入值" allowClear />
+                        <a-input placeholder="请输入值" v-model:value="queryForm.value" allowClear />
                     </a-form-item>
-                    <a-button class="ml-10" type="primary" @click="">
+                    <a-button class="ml-10" type="primary" @click="query(API.DICT_LIST, queryForm)">
                         <template #icon>
                             <SearchOutlined />
                         </template>
@@ -73,7 +73,7 @@ const columns = [
     }
 ]
 
-const { loading, list, query } = useCrud();
+const { loading, list, queryForm, query } = useCrud();
 
 const isOpen = ref(false);
 const isEdit = ref(false);

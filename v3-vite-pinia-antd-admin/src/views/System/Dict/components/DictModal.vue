@@ -35,7 +35,7 @@
                     <a-input v-if="column.dataIndex === 'label'" v-model:value="record.label" placeholder="请输入备注" allowClear />
                     <a-input-number v-if="column.dataIndex === 'sort'" style="width: 100%;" min="0" v-model:value="record.sort" placeholder="排序" />
                     <div v-if="column.dataIndex === 'action'">
-                        <a-popconfirm title="是否确认删除?" ok-text="确定" cancel-text="取消" @confirm="handleDelete(record)">
+                        <a-popconfirm title="是否确认删除?" ok-text="确定" cancel-text="取消" @confirm="handleRemove(record)">
                             <a-button type="link">删除</a-button>
                         </a-popconfirm>
                     </div>
@@ -48,8 +48,9 @@
 <script setup lang="ts">
 import { API } from '@/service'
 import { useCrud } from '@/hooks';
-import { ColumnGroupType, ColumnType } from 'ant-design-vue/es/table';
 import { message } from 'ant-design-vue';
+import { generateRandomString } from "@/utils"
+import { ColumnGroupType, ColumnType } from 'ant-design-vue/es/table';
 
 const props = defineProps(['isOpen', 'isEdit', 'formData', 'dictItems']);
 
@@ -122,13 +123,14 @@ const handleCancel = () => {
 
 const handleAddRow = () => {
     // #uniqueId 该字段仅在删除行没有id属性时用于定位索引
-    const uniqueId = Math.random().toString(36).substring(2, 11);
-    dictItems.value.push({ uniqueId: uniqueId, code: '', value: '', label: '' })
+    const uniqueId = generateRandomString(32);
+    console.log(uniqueId);
+    dictItems.value.push({ uniqueId: uniqueId, code: '', value: '', label: '' });
 }
 
 const { remove } = useCrud();
 
-const handleDelete = async (record: DictItemState) => {
+const handleRemove = async (record: DictItemState) => {
     if (record.id) {
         // #通过接口删除字典项并刷新列表
         await remove(API.DICT_ITEM_DELETE, record.id);

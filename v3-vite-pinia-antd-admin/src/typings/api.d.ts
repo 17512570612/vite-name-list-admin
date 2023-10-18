@@ -28,7 +28,7 @@ declare namespace UserApi {
   }
   interface User {
     id: string;
-    nickname: string;
+    name: string;
     password: string;
     username: string;
   }

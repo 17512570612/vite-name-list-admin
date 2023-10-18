@@ -7,11 +7,13 @@ export function useCrud() {
   const list = ref();
   const queryForm = ref<any>({ pageNo: 1, pageSize: 10 });
 
-  async function query(url: string, params = { pageNo: 1, pageSize: 10 }) {
+  async function create(url: string, params: any) {
     loading.value = true;
     try {
-      const res = await get<Response>(url, params);
-      list.value = res.result.records ? res.result.records : res.result;
+      const res = await post<Response>(url, params);
+      if (res.code === 200) {
+        message.open({ type: "success", content: res.message });
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -19,10 +21,10 @@ export function useCrud() {
     }
   }
 
-  async function create(url: string, params: any) {
+  async function remove(url: string, id: string | string[]) {
     loading.value = true;
     try {
-      const res = await post<Response>(url, params);
+      const res = await get<Response>(url, { id });
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
       }
@@ -47,13 +49,11 @@ export function useCrud() {
     }
   }
 
-  async function remove(url: string, id: string | string[]) {
+  async function query(url: string, params = { pageNo: 1, pageSize: 10 }) {
     loading.value = true;
     try {
-      const res = await get<Response>(url, { id });
-      if (res.code === 200) {
-        message.open({ type: "success", content: res.message });
-      }
+      const res = await get<Response>(url, params);
+      list.value = res.result.records ? res.result.records : res.result;
     } catch (error) {
       console.log(error);
     } finally {

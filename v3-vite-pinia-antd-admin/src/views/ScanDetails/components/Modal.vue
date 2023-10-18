@@ -3,21 +3,21 @@
         <template #title>详细信息</template>
         <div style="max-height: 450px; overflow: hidden; overflow-y: auto;">
             <a-descriptions size="small" :column="2" bordered>
-                <a-descriptions-item label="编号">{{ details?.id }}</a-descriptions-item>
-                <a-descriptions-item label="原始状态">{{ details?.status }}</a-descriptions-item>
-                <a-descriptions-item label="生效日期">{{ details?.effectiveDate }}</a-descriptions-item>
-                <a-descriptions-item label="失效日期">{{ details?.expiringDate }}</a-descriptions-item>
+                <a-descriptions-item label="编号">{{ details.id }}</a-descriptions-item>
+                <a-descriptions-item label="原始状态">{{ details.status }}</a-descriptions-item>
+                <a-descriptions-item label="生效日期">{{ details.effectiveDate }}</a-descriptions-item>
+                <a-descriptions-item label="失效日期">{{ details.expiringDate }}</a-descriptions-item>
                 <a-descriptions-item label="国籍信息" :span="2">
                     <template v-for="item in details?.nationality.split(',')">
                         <a-tag style="margin-right: 5px;">{{ item }}</a-tag>
                     </template>
                 </a-descriptions-item>
-                <a-descriptions-item label="扫描类型">{{ details?.scanType }}</a-descriptions-item>
-                <a-descriptions-item label="审批人">{{ details?.approver }}</a-descriptions-item>
-                <a-descriptions-item label="最后维护人">{{ details?.lastMaintainer }}</a-descriptions-item>
-                <a-descriptions-item label="最后维护时间">{{ details?.lastMaintenanceTimeL }}</a-descriptions-item>
-                <a-descriptions-item label="制裁来源(国家、组织)">{{ details?.sourceOfSanctions }}</a-descriptions-item>
-                <a-descriptions-item label="名单类型">{{ details?.TypeOfSanctions }}</a-descriptions-item>
+                <a-descriptions-item label="扫描类型">{{ details.scanType }}</a-descriptions-item>
+                <a-descriptions-item label="审批人">{{ details.approver }}</a-descriptions-item>
+                <a-descriptions-item label="最后维护人">{{ details.lastMaintainer }}</a-descriptions-item>
+                <a-descriptions-item label="最后维护时间">{{ details.lastMaintenanceTimeL }}</a-descriptions-item>
+                <a-descriptions-item label="制裁来源(国家、组织)">{{ details.sourceOfSanctions }}</a-descriptions-item>
+                <a-descriptions-item label="名单类型">{{ details.TypeOfSanctions }}</a-descriptions-item>
             </a-descriptions>
             <a-tabs v-model:activeKey="activeKey" :tab-position="mode" style="margin-top: 20px;" @change="tabsChange(activeKey)">
                 <a-tab-pane v-for="(item, index) in tabs" :key="index + 1" :tab="item.name">

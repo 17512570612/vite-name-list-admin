@@ -3,8 +3,8 @@
         <a-form :labelCol="{ span: 7 }" :model="queryForm">
             <a-row :gutter="24">
                 <a-col :span="6">
-                    <a-form-item label="查询范围">
-                        <a-select placeholder="请选择查询范围" />
+                    <a-form-item label="所属机构">
+                        <a-select placeholder="请选择所属机构" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -25,19 +25,19 @@
             </a-row>
             <a-row :gutter="24" v-if="isExpand">
                 <a-col :span="6">
-                    <a-form-item label="登录日期">
+                    <a-form-item label="用户角色">
                         <a-select placeholder="请选择角色" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                    <a-form-item label="用户角色">
+                    <a-form-item label="登录日期">
                         <a-select placeholder="请选择角色" />
                     </a-form-item>
                 </a-col>
             </a-row>
             <a-row>
                 <a-col :span="24" class="flex aic jc-sb" style="text-align: right;margin-bottom: 20px;">
-                    <a-button>
+                    <a-button @click="handleCreate">
                         <template #icon>
                             <PlusOutlined />
                         </template>
@@ -71,7 +71,7 @@
         </a-form>
     </div>
     <a-spin :spinning="loading">
-        <a-table bordered size="small" :columns="columns" :data-source="list">
+        <a-table bordered :columns="columns" :data-source="list">
             <template #bodyCell="{ record, column }">
                 <div v-if="column.dataIndex === 'jobNumber'">
                     {{ record.jobNumber ? record.jobNumber : "-" }}
@@ -89,14 +89,16 @@
             </template>
         </a-table>
     </a-spin>
+    <UserModal :isOpen="isOpen" @update:modal-status="updateModalStatus" />
 </template>
 
 <script setup lang="ts">
 import { API } from "@/service"
 import { useCrud } from "@/hooks"
+import UserModal from "./components/UserModal.vue"
 import { ColumnGroupType, ColumnType } from "ant-design-vue/es/table";
 
-const { loading, list, queryForm } = useCrud();
+const { loading, list, queryForm, query } = useCrud();
 
 const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
     {
@@ -112,7 +114,7 @@ const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
     {
         title: '姓名',
         align: 'center',
-        dataIndex: 'nickname',
+        dataIndex: 'name',
     },
     {
         title: '角色',
@@ -139,11 +141,18 @@ const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
 ];
 
 const isExpand = ref(false);
+const isOpen = ref(false);
 
-const { query } = useCrud();
+const handleCreate = () => {
+    isOpen.value = true;
+}
 
-onMounted(() => {
-    query(API.USER_LIST);
+const updateModalStatus = (newVal: boolean) => {
+    isOpen.value = newVal;
+}
+
+onMounted(async () => {
+    await query(API.USER_LIST);
 })
 </script>
 

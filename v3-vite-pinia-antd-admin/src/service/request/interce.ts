@@ -33,9 +33,9 @@ axiosInstance.interceptors.response.use(
       removeToken();
       message.open({
         type: "error",
-        content: "token验证失败，请重新登录",
+        content: "token验证失败,请重新登录",
       });
-      router.push("/login");
+      nextTick(() => router.push("/login"));
     }
     return Promise.reject(error);
   }

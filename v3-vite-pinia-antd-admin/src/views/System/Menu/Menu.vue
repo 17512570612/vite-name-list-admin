@@ -3,7 +3,7 @@
     <div class="search-box">
         <a-form labelAlign="right" :labelCol="{ span: 8 }">
             <div class="flex jc-sb">
-                <a-button type="primary" class="mb-10" @click="handleAdd">
+                <a-button class="mb-10" @click="handleAdd">
                     <template #icon>
                         <PlusOutlined />
                     </template>
@@ -30,7 +30,7 @@
         </a-form>
     </div>
     <a-spin :spinning="loading">
-        <a-table bordered size="small" rowKey="id" :columns="columns" :data-source="list">
+        <a-table bordered rowKey="id" :columns="columns" :data-source="list">
             <template #bodyCell="{ record, column }">
                 <template v-if="column.dataIndex === 'icon'">
                     <component v-if="record.icon != ''" :is='record.icon'></component>
@@ -50,13 +50,13 @@
                 </template>
             </template>
         </a-table>
-        <MenuDrawer :open.sync="isModalShow" :formData="rowData" :treeMenu="formList" @update:modal-show="updateModalShow" />
+        <MenuDrawer :open.sync="isModalShow" :formData="rowData" :treeMenu="list" @update:modal-show="updateModalShow" />
     </a-spin>
 </template>
 
 <script setup lang="ts">
-import { useCrud } from "@/hooks"
 import { API } from "@/service"
+import { useCrud } from "@/hooks"
 import MenuDrawer from './components/MenuDrawer.vue';
 import { ColumnGroupType, ColumnType } from "ant-design-vue/es/table";
 

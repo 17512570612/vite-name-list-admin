@@ -44,9 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-import IconModal from './IconModal.vue';
-import { useCrud } from '@/hooks'
 import { API } from '@/service'
+import { useCrud } from '@/hooks'
+import IconModal from './IconModal.vue';
 import { SettingOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
@@ -103,7 +103,7 @@ watch(props, (newProps) => {
     open.value = newProps.open;
     treeMenu.value = newProps.treeMenu;
     if (props.formData != undefined) {
-        formData.value = newProps.formData as FormData;
+        formData.value = Object.assign({}, newProps.formData as FormData);
     }
 }, { deep: true });
 
@@ -114,22 +114,22 @@ const handleModalClose = () => {
 
 const iconModalShow = ref<boolean>(false);
 
-// !打开icon弹窗
+// #打开icon弹窗
 const selectIcon = () => {
     iconModalShow.value = true;
 }
 
-// !更新icon弹窗状态
+// #更新icon弹窗状态
 const updateModalShow = (newOpen: boolean) => {
     iconModalShow.value = newOpen;
 }
 
-// !更新icon值
+// #更新icon值
 const updateIconValue = (newVal: string) => {
     formData.value.icon = newVal;
 }
 
-// !重置表单字段
+// #重置表单字段
 const resetForm = () => {
     formData.value.parentId = null;
     formData.value.parent = 0;
@@ -143,13 +143,13 @@ const resetForm = () => {
     formData.value.children = [];
 }
 
-// !提交
+// #提交
 const handleOk = async () => {
     try {
         formData.value.parentId ? formData.value.parent = 0 : formData.value.parent = 1;
         await create(API.MENU_ADD, formData.value);
         resetForm();
-        // !延迟关闭窗口 防止窗口抖动
+        // #延迟关闭窗口 防止窗口抖动
         await new Promise((resolve) => setTimeout(resolve, 100));
         handleModalClose();
     } catch (error) {

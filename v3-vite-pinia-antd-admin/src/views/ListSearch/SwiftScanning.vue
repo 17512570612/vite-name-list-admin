@@ -88,7 +88,11 @@ const handleUpload = () => {
     if (!swiftState.swiftType) { return message.warning("请选择报文类型"); }
     if (['1', '2', '5'].includes(swiftState.swiftType) && !swiftState.swiftCode) { return message.warning("请选择报文文件码"); }
     loading.value = true; uploading.value = true;
-    setTimeout(() => { loading.value = false; uploading.value = false; router.push("/ScanDetails"); }, 3000);
+    setTimeout(() => {
+        loading.value = false;
+        uploading.value = false;
+        router.push("/ScanDetails")
+    }, 3000)
 };
 </script>
 
