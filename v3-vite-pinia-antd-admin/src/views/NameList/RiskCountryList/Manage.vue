@@ -126,12 +126,14 @@
             </template>
         </a-table>
     </a-spin>
+    <FeedbackModal />
 </template>
 
 <script setup lang="ts">
-import { API, download } from '@/service'
 import { useCrud } from '@/hooks';
 import { formatDateTime } from '@/utils'
+import { API, post, download } from '@/service'
+import FeedbackModal from './components/FeedbackModal.vue';
 
 const columns: any = [
     { title: '英文名称', dataIndex: 'enName', ellipsis: true },
@@ -158,12 +160,37 @@ const handleExpand = () => {
     isExpand.value = !isExpand.value;
 }
 
-const fileList: any = [];
+const fileList: any = ref([]);
 const uploading = ref(false);
 
-const handleUpload = () => { }
-const beforeUpload = () => { }
-const handleRemove = () => { }
+// #上传文件前
+const beforeUpload = (file: any) => {
+    fileList.value = [file];
+    return false;
+};
+
+// #上传文件
+const handleUpload = async () => {
+    loading.value = true;
+    try {
+        const file = new FormData();
+        if (fileList.value && fileList.value.length >= 0) {
+            fileList.value.forEach((f: any) => file.append('file', f));
+        }
+        const res = await post(API.COUNTRY_UPLOAD, file);
+        fileList.value = [];
+        console.log(res)
+    } catch (error: any) {
+        console.log(error);
+    } finally {
+        loading.value = false;
+    }
+}
+
+// #删除文件
+const handleRemove = () => {
+    fileList.value = [];
+}
 
 const downloadFile = async () => {
     await download(API.COUNTRY_FILE).then((response: any) => {
@@ -192,4 +219,8 @@ onMounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+:deep(.ant-upload-list-item-name) {
+    width: 30px;
+}
+</style>

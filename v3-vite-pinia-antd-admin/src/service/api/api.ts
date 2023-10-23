@@ -21,4 +21,6 @@ export const API = {
   COUNTRY_LIST: "country/list",
   // 国家地区模版下载
   COUNTRY_FILE: "country/file",
+  // 国家地区名单上传
+  COUNTRY_UPLOAD: "country/upload",
 };
