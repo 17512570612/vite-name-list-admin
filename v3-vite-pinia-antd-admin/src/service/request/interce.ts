@@ -31,11 +31,15 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       const { removeToken } = useUserStore();
       removeToken();
-      message.open({
-        type: "error",
-        content: "token验证失败,请重新登录",
-      });
-      nextTick(() => router.push("/login"));
+      router.push("/login");
+      setTimeout(
+        () =>
+          message.open({
+            type: "error",
+            content: "token验证失败,请重新登录",
+          }),
+        1000
+      );
     }
     return Promise.reject(error);
   }

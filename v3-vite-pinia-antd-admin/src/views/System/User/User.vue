@@ -96,11 +96,10 @@
 import { API } from "@/service"
 import { useCrud } from "@/hooks"
 import UserModal from "./components/UserModal.vue"
-import { ColumnGroupType, ColumnType } from "ant-design-vue/es/table";
 
 const { loading, list, queryForm, query } = useCrud();
 
-const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
+const columns: any = [
     {
         title: '序号',
         dataIndex: 'id',

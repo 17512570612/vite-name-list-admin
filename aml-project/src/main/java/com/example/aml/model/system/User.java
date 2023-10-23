@@ -9,7 +9,7 @@ import java.util.List;
 @TableName("SYS_USER")
 public class User {
     private Long id; // 用户id
-    private String username, password, nickname; // 用户名、密码、昵称、token
+    private String username, password, name; // 用户名、密码、姓名
     private int jobNumber; // 工号
     private int institution; // 机构号
     private int status; // 状态

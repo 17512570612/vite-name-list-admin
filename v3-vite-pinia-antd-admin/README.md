@@ -3,7 +3,7 @@
 - 西力科技反洗钱名单检测系统
 
 - 基于 Vite 构建的 Vue3 后台管理系统
-- 用到的技术栈包含
+- 技术栈包含
   - Vue3
   - TypeScript
   - Vue Router@4

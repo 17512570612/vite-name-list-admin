@@ -43,9 +43,9 @@
                     <a-tag :color="record.status === 1 ? 'green' : 'red'">{{ record.status === 1 ? '启用' : '停用' }}</a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'action'">
-                    <a-button class="btn-link mr-10" type="link" @click="edit(record)">修改</a-button>
+                    <a-button class="p-0 mr-10" type="link" @click="edit(record)">修改</a-button>
                     <a-popconfirm v-if="!record.children" title="是否确认删除?" ok-text="确定" cancel-text="取消" @confirm="handleRemove(record.id)">
-                        <a-button class="btn-link" type="link">删除</a-button>
+                        <a-button class="p-0" type="link">删除</a-button>
                     </a-popconfirm>
                 </template>
             </template>
@@ -58,12 +58,12 @@
 import { API } from "@/service"
 import { useCrud } from "@/hooks"
 import MenuDrawer from './components/MenuDrawer.vue';
-import { ColumnGroupType, ColumnType } from "ant-design-vue/es/table";
 
-const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
+const columns: any = [
     {
         title: '名称',
         dataIndex: 'name',
+        ellipsis: true,
         width: 200
     },
     {
@@ -90,12 +90,14 @@ const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
         title: '组件',
         align: 'center',
         dataIndex: 'component',
+        ellipsis: true,
         width: 180
     },
     {
         title: '路径',
         align: 'center',
         dataIndex: 'path',
+        ellipsis: true,
         width: 180
     },
     {
@@ -142,10 +144,6 @@ onMounted(() => getMenuTree())
 <style scoped>
 .isExpand {
     width: 100%;
-}
-
-.btn-link {
-    padding: 0;
 }
 
 :deep(.ant-tag) {

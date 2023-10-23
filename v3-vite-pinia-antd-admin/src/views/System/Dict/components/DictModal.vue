@@ -124,7 +124,6 @@ const handleCancel = () => {
 const handleAddRow = () => {
     // #uniqueId 该字段仅在删除行没有id属性时用于定位索引
     const uniqueId = generateRandomString(32);
-    console.log(uniqueId);
     dictItems.value.push({ uniqueId: uniqueId, code: '', value: '', label: '' });
 }
 

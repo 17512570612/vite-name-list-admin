@@ -15,7 +15,7 @@ import java.util.Date;
 @TableName("FILTER_COUNTRY_RECORD")
 public class FilterCountryRecord {
     @TableId(type = IdType.ASSIGN_UUID)
-    private String id; // #用户id
+    private String id; // #id
     private String source; // #制裁来源
     private String operate; // #操作类型
     private String businessManagementUnit; // #业管单位

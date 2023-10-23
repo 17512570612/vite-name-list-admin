@@ -17,4 +17,8 @@ export const API = {
   DICT_ARRAY: "dict/dictArray",
   // 查询用户
   USER_LIST: "user/list",
+  // 国家地区列表
+  COUNTRY_LIST: "country/list",
+  // 国家地区模版下载
+  COUNTRY_FILE: "country/file",
 };

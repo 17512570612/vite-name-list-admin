@@ -528,7 +528,9 @@ public class FilterCountryRecordController {
                     break;
                 case "startDate":
                     if (propertyValue == null || propertyValue.isEmpty()) {
-                        record.setExpiringDate(null);
+                        Date date = new Date();
+                        Date parse = dateFormat.parse(date.toString());
+                        record.setStartDate(parse);
                     } else {
                         try {
                             Date date = dateFormat.parse(propertyValue);

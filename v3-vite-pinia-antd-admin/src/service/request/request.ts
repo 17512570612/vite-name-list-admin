@@ -36,15 +36,13 @@ export const remove = async <T>(url: string, data?: any): Promise<T> => {
   }
 };
 
-export const download = async (url: string): Promise<Blob> => {
+export const download = async (url: string): Promise<any> => {
   try {
     const response = await axiosInstance.get(url, {
+      headers: { "Content-Type": "application/json; charset=UTF-8" },
       responseType: "blob",
     });
-    const blob = new Blob([response.data], {
-      type: response.headers["content-type"],
-    });
-    return blob;
+    return response;
   } catch (error) {
     throw error;
   }

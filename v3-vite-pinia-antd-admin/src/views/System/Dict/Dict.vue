@@ -51,7 +51,7 @@ import { API, get } from "@/service"
 import { useCrud } from "@/hooks"
 import DictModal from "./components/DictModal.vue"
 
-const columns = [
+const columns: any = [
     {
         title: '代码',
         dataIndex: 'code',
