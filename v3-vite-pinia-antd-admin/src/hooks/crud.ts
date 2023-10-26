@@ -7,11 +7,17 @@ export function useCrud() {
   const loading = ref(false);
   const queryForm = ref<any>({ pageNo: 1, pageSize: 10 });
   const pagination = ref({ total: 0, current: 1, pageSize: 10 });
+  const url = ref({
+    query: "",
+    create: "",
+    update: "",
+    remove: "",
+  });
 
-  async function create(url: string, params: any) {
+  async function create(params: any) {
     loading.value = true;
     try {
-      const res = await post<Response>(url, params);
+      const res = await post<Response>(url.value.create, params);
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
       }
@@ -22,10 +28,10 @@ export function useCrud() {
     }
   }
 
-  async function remove(url: string, id: string | string[]) {
+  async function remove(ids: any) {
     loading.value = true;
     try {
-      const res = await get<Response>(url, { id });
+      const res = await post<Response>(url.value.remove, { ids: ids });
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
       }
@@ -36,10 +42,10 @@ export function useCrud() {
     }
   }
 
-  async function update(url: string, params: any) {
+  async function update(params: any) {
     loading.value = true;
     try {
-      const res = await post<Response>(url, params);
+      const res = await post<Response>(url.value.update, params);
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
       }
@@ -50,10 +56,10 @@ export function useCrud() {
     }
   }
 
-  async function query(url: string, params = { pageNo: 1, pageSize: 10 }) {
+  async function query(params = { pageNo: 1, pageSize: 10 }) {
     loading.value = true;
     try {
-      const res = await get<Response>(url, params);
+      const res = await get<Response>(url.value.query, params);
       if (res.result.records) {
         list.value = res.result.records;
         pagination.value.current = res.result.pageNo;
@@ -70,8 +76,9 @@ export function useCrud() {
   }
 
   return {
-    loading,
+    url,
     list,
+    loading,
     queryForm,
     pagination,
     query,

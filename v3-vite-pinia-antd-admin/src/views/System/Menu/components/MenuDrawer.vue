@@ -57,7 +57,8 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modalShow"]);
 
-const { create } = useCrud();
+const { url, create } = useCrud();
+url.value.create = API.MENU_ADD;
 
 interface FormData {
     parentId: string | null;
@@ -147,7 +148,7 @@ const resetForm = () => {
 const handleOk = async () => {
     try {
         formData.value.parentId ? formData.value.parent = 0 : formData.value.parent = 1;
-        await create(API.MENU_ADD, formData.value);
+        await create(formData.value);
         resetForm();
         // #延迟关闭窗口 防止窗口抖动
         await new Promise((resolve) => setTimeout(resolve, 100));

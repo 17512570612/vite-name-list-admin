@@ -15,7 +15,7 @@
                     <a-form-item label="值">
                         <a-input placeholder="请输入值" v-model:value="queryForm.value" allowClear />
                     </a-form-item>
-                    <a-button class="ml-10" type="primary" @click="query(API.DICT_LIST, queryForm)">
+                    <a-button class="ml-10" type="primary" @click="query(queryForm)">
                         <template #icon>
                             <SearchOutlined />
                         </template>
@@ -37,7 +37,7 @@
                 <template v-if="column.dataIndex === 'action'">
                     <div class="flex">
                         <a-button class="btn-link mr-10" type="link" @click="handleEdit(record)">编辑</a-button>
-                        <a-button class="btn-link" type="link" @click="handleEdit(record)">删除</a-button>
+                        <a-button class="btn-link" type="link" @click="">删除</a-button>
                     </div>
                 </template>
             </template>
@@ -47,33 +47,20 @@
 </template>
 
 <script setup lang="ts">
-import { API, get } from "@/service"
 import { useCrud } from "@/hooks"
+import { API, get } from "@/service"
 import DictModal from "./components/DictModal.vue"
+import type { TableColumnsType } from 'ant-design-vue';
 
-const columns: any = [
-    {
-        title: '代码',
-        dataIndex: 'code',
-        width: 300
-    },
-    {
-        title: '值',
-        dataIndex: 'value',
-        width: 300
-    },
-    {
-        title: '备注',
-        dataIndex: 'description',
-    },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        width: 120
-    }
+const columns: TableColumnsType = [
+    { title: '代码', dataIndex: 'code', width: 300 },
+    { title: '值', dataIndex: 'value', width: 300 },
+    { title: '备注', dataIndex: 'description', },
+    { title: '操作', dataIndex: 'action', width: 120 }
 ]
 
-const { loading, list, queryForm, query } = useCrud();
+const { loading, list, url, queryForm, query } = useCrud();
+url.value.query = API.DICT_LIST;
 
 const isOpen = ref(false);
 const isEdit = ref(false);
@@ -92,10 +79,10 @@ const handleEdit = (record: DictState) => {
     getDictItems(record);
 }
 
-const updateModalStatus = async (newVal: boolean) => {
+const updateModalStatus = (newVal: boolean) => {
     isOpen.value = newVal;
     isEdit.value = newVal;
-    await query(API.DICT_LIST)
+    query()
 }
 
 const getDictItems = async (record: any) => {
@@ -103,9 +90,7 @@ const getDictItems = async (record: any) => {
     dictItems.value = res.result;
 }
 
-onMounted(async () => {
-    await query(API.DICT_LIST)
-})
+onMounted(() => query())
 </script>
 
 <style scoped>

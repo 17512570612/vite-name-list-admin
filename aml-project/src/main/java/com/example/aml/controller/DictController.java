@@ -32,9 +32,9 @@ public class DictController {
             BeanUtils.copyProperties(request, dict);
             dictService.saveOrUpdate(dict);
             List<DictItem> list = request.getList();
-            list.forEach(e -> {
-                e.setRelatedId(request.getId());
-                dictItemService.saveOrUpdate(e);
+            list.forEach(item -> {
+                item.setRelatedId(request.getId());
+                dictItemService.saveOrUpdate(item);
             });
             return Response.success(dict);
         } catch (Exception e) {

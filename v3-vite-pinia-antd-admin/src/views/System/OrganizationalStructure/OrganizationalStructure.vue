@@ -19,10 +19,11 @@
 
 <script setup lang="ts">
 import { useCrud } from "@/hooks"
+import type { TableColumnsType } from 'ant-design-vue';
 
 const { loading } = useCrud();
 
-const columns: any = [
+const columns: TableColumnsType = [
     { title: '名称', dataIndex: 'name' },
     { title: '排序', dataIndex: 'sort', align: 'center' },
     { title: '状态', dataIndex: 'status', align: 'center' },

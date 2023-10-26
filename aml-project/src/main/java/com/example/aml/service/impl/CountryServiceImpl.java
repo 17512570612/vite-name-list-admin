@@ -19,8 +19,6 @@ public class CountryServiceImpl extends ServiceImpl<CountryMapper, FilterCountry
     @Autowired
     CountryMapper countryMapper;
 
-
-
     @Override
     public Page<FilterCountryRecord> findAll(CountryListRequest request) {
         try {

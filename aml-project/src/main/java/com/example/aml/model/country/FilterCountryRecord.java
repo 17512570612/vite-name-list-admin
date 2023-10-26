@@ -38,7 +38,7 @@ public class FilterCountryRecord {
     private String maintenanceReasons; // #维护原因
     private String controlRequirements; // #管控要求
     private String maintenanceState; // #维护状态 1.正式项目 2.编辑中 3.待审批 4.审批拒绝 5.已删除
-    private Date startDate; // #添加日期
-    private Date expiringDate; // #失效日期
-    private Date uploadTime; // #上传时间
+    private String startDate; // #添加日期
+    private String expiringDate; // #失效日期
+    private String uploadTime; // #上传时间
 }

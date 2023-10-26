@@ -44,7 +44,7 @@
                 </template>
                 <template v-if="column.dataIndex === 'action'">
                     <a-button class="p-0 mr-10" type="link" @click="edit(record)">修改</a-button>
-                    <a-popconfirm v-if="!record.children" title="是否确认删除?" ok-text="确定" cancel-text="取消" @confirm="handleRemove(record.id)">
+                    <a-popconfirm v-if="!record.children" title="是否确认删除?" ok-text="确定" cancel-text="取消" @confirm="remove(record.id)">
                         <a-button class="p-0" type="link">删除</a-button>
                     </a-popconfirm>
                 </template>
@@ -58,57 +58,22 @@
 import { API } from "@/service"
 import { useCrud } from "@/hooks"
 import MenuDrawer from './components/MenuDrawer.vue';
+import type { TableColumnsType } from 'ant-design-vue';
 
-const columns: any = [
-    {
-        title: '名称',
-        dataIndex: 'name',
-        ellipsis: true,
-        width: 200
-    },
-    {
-        title: '图标',
-        align: 'center',
-        dataIndex: 'icon',
-    },
-    {
-        title: '类型',
-        align: 'center',
-        dataIndex: 'type',
-    },
-    {
-        title: '排序',
-        align: 'center',
-        dataIndex: 'sort',
-    },
-    {
-        title: '状态',
-        align: 'center',
-        dataIndex: 'status',
-    },
-    {
-        title: '组件',
-        align: 'center',
-        dataIndex: 'component',
-        ellipsis: true,
-        width: 180
-    },
-    {
-        title: '路径',
-        align: 'center',
-        dataIndex: 'path',
-        ellipsis: true,
-        width: 180
-    },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        align: 'center',
-        width: 120
-    },
+const columns: TableColumnsType = [
+    { title: '名称', dataIndex: 'name', ellipsis: true, width: 200 },
+    { title: '图标', align: 'center', dataIndex: 'icon', },
+    { title: '类型', align: 'center', dataIndex: 'type', },
+    { title: '排序', align: 'center', dataIndex: 'sort', },
+    { title: '状态', align: 'center', dataIndex: 'status', },
+    { title: '组件', align: 'center', dataIndex: 'component', ellipsis: true, width: 180 },
+    { title: '路径', align: 'center', dataIndex: 'path', ellipsis: true, width: 180 },
+    { title: '操作', align: 'center', dataIndex: 'action', width: 120 },
 ];
 
-const { loading, list, query, remove } = useCrud();
+const { loading, list, url, query, remove } = useCrud();
+url.value.query = API.MENU_LIST;
+url.value.remove = API.MENU_DELETE;
 
 const isModalShow = ref<boolean>(false)
 
@@ -121,14 +86,8 @@ const handleAdd = () => {
     isModalShow.value = true
 }
 
-const getMenuTree = async () => {
-    await query(API.MENU_LIST)
-}
-
-const handleRemove = (id: string) => {
-    remove(API.MENU_DELETE, id).then(() => {
-        query(API.MENU_LIST)
-    })
+const getMenuTree = () => {
+    query()
 }
 
 const rowData = ref();

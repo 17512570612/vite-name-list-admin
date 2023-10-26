@@ -44,7 +44,7 @@ public class FilterCountryRecordController {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
-     * @description: 初始化映射关系
+     * @description: 映射关系
      */
     static {
         COLUMN_MAPPING.put(0, "riskLevel");
@@ -353,6 +353,9 @@ public class FilterCountryRecordController {
                     boolean existsInDatabase = checkIfRecordExistsInDatabase(record);
                     if (record != null && !records.contains(record) && !existsInDatabase) {
                         record.setMaintenanceState("3");
+                        record.setDelFlag("1");
+                        String date = dateFormat.format(new Date());
+                        record.setUploadTime(date);
                         records.add(record);
                         // #将解析出来的数据保存到数据库
                         countryFlowService.saveOrUpdate(record);
@@ -528,12 +531,10 @@ public class FilterCountryRecordController {
                     break;
                 case "startDate":
                     if (propertyValue == null || propertyValue.isEmpty()) {
-                        Date date = new Date();
-                        Date parse = dateFormat.parse(date.toString());
-                        record.setStartDate(parse);
+                        record.setStartDate(null);
                     } else {
                         try {
-                            Date date = dateFormat.parse(propertyValue);
+                            String date = dateFormat.format(propertyValue);
                             record.setStartDate(date);
                         } catch (Exception e) {
                             errors.add(new ExcelError(rowIndex, columnIndex, "生效日期", "格式不合法"));
@@ -545,7 +546,7 @@ public class FilterCountryRecordController {
                         record.setExpiringDate(null);
                     } else {
                         try {
-                            Date date = dateFormat.parse(propertyValue);
+                            String date = dateFormat.format(propertyValue);
                             record.setExpiringDate(date);
                         } catch (Exception e) {
                             errors.add(new ExcelError(rowIndex, columnIndex, "失效日期", "格式不合法"));

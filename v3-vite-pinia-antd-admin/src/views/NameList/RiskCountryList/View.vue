@@ -84,10 +84,12 @@
 <script setup lang="ts">
 import { API } from '@/service'
 import { useCrud } from '@/hooks'
+import type { TableColumnsType } from 'ant-design-vue';
 
-const { list, loading, queryForm, pagination, query } = useCrud();
+const { url, list, loading, queryForm, pagination, query } = useCrud();
+url.value.query = API.COUNTRY_LIST;
 
-const columns: any = [
+const columns: TableColumnsType = [
     { title: '英文名称', dataIndex: 'enName', ellipsis: true },
     { title: '英文简称', dataIndex: 'enAbbreviation', ellipsis: true },
     { title: '中文名', dataIndex: 'cnName', ellipsis: true },
@@ -109,12 +111,10 @@ const handleView = (record: any) => {
 const handlePagination = (page: any) => {
     queryForm.value.pageNo = page.current;
     queryForm.value.pageSize = page.pageSize;
-    query(API.COUNTRY_LIST, queryForm.value);
+    query(queryForm.value);
 };
 
-onMounted(() => {
-    query(API.COUNTRY_LIST);
-})
+onMounted(() => query())
 </script>
 
 <style scoped></style>

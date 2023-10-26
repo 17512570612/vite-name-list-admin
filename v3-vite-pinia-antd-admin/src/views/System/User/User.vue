@@ -96,47 +96,19 @@
 import { API } from "@/service"
 import { useCrud } from "@/hooks"
 import UserModal from "./components/UserModal.vue"
+import type { TableColumnsType } from 'ant-design-vue'
 
-const { loading, list, queryForm, query } = useCrud();
+const { loading, list, url, queryForm, query } = useCrud();
+url.value.query = API.USER_LIST;
 
-const columns: any = [
-    {
-        title: '序号',
-        dataIndex: 'id',
-        width: 200
-    },
-    {
-        title: '工号',
-        align: 'center',
-        dataIndex: 'jobNumber',
-    },
-    {
-        title: '姓名',
-        align: 'center',
-        dataIndex: 'name',
-    },
-    {
-        title: '角色',
-        align: 'center',
-        dataIndex: 'sort',
-    },
-    {
-        title: '机构',
-        align: 'center',
-        dataIndex: 'institution',
-    },
-    {
-        title: '状态',
-        align: 'center',
-        dataIndex: 'status',
-        width: 180
-    },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        align: 'center',
-        width: 120
-    },
+const columns: TableColumnsType = [
+    { title: '序号', dataIndex: 'id', width: 200 },
+    { title: '工号', align: 'center', dataIndex: 'jobNumber', },
+    { title: '姓名', align: 'center', dataIndex: 'name', },
+    { title: '角色', align: 'center', dataIndex: 'sort', },
+    { title: '机构', align: 'center', dataIndex: 'institution', },
+    { title: '状态', align: 'center', dataIndex: 'status', width: 180 },
+    { title: '操作', dataIndex: 'action', align: 'center', width: 120 },
 ];
 
 const isExpand = ref(false);
@@ -150,9 +122,7 @@ const updateModalStatus = (newVal: boolean) => {
     isOpen.value = newVal;
 }
 
-onMounted(async () => {
-    await query(API.USER_LIST);
-})
+onMounted(() => query())
 </script>
 
 <style scoped>

@@ -69,42 +69,25 @@ watch(props, (newValue: any) => {
 })
 
 const columns: (ColumnGroupType<any> | ColumnType<any>)[] = [
-    {
-        title: '代码',
-        dataIndex: 'code',
-        width: 180,
-    },
-    {
-        title: '值',
-        dataIndex: 'value',
-        width: 180,
-    },
-    {
-        title: '描述',
-        dataIndex: 'label',
-        width: 180,
-    },
-    {
-        title: '排序',
-        dataIndex: 'sort',
-        width: 80
-    },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        align: 'center',
-        width: 80
-    }
+    { title: '代码', dataIndex: 'code', width: 180 },
+    { title: '值', dataIndex: 'value', width: 180 },
+    { title: '描述', dataIndex: 'label', width: 180 },
+    { title: '排序', dataIndex: 'sort', width: 80 },
+    { title: '操作', dataIndex: 'action', align: 'center', width: 80 }
 ]
 
-const { create } = useCrud();
+const { url, create, remove } = useCrud();
+
+url.value.create = API.DICT_ADD;
+url.value.remove = API.DICT_ITEM_DELETE;
 
 const handleOk = async () => {
-    if (validateForm()) {
-        formData.value.list = dictItems.value;
-        await create(API.DICT_ADD, formData.value);
-        emit("update:modalStatus", false);
-    }
+    // if (isEdit && !validateForm()) {
+    //     return
+    // }
+    formData.value.query = dictItems.value;
+    await create(formData.value);
+    emit("update:modalStatus", false);
 }
 
 const validateForm = () => {
@@ -127,12 +110,10 @@ const handleAddRow = () => {
     dictItems.value.push({ uniqueId: uniqueId, code: '', value: '', label: '' });
 }
 
-const { remove } = useCrud();
-
 const handleRemove = async (record: DictItemState) => {
     if (record.id) {
         // #通过接口删除字典项并刷新列表
-        await remove(API.DICT_ITEM_DELETE, record.id);
+        await remove(record.id);
         emit("update:dictItem", formData.value);
     } else {
         const dataIndex = dictItems.value.findIndex((item: DictItemState) => item.uniqueId === record.uniqueId);
