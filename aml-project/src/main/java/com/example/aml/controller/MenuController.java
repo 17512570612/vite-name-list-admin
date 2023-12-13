@@ -29,6 +29,7 @@ public class MenuController {
         try {
             Menu menu = new Menu();
             BeanUtils.copyProperties(request, menu);
+            menu.setName(request.getPath());
             menuService.saveOrUpdate(menu);
             return Response.success(menu);
         } catch (Exception e) {

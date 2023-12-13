@@ -31,4 +31,8 @@ export const API = {
   COUNTRY_APPROCED_REJECTED: "country/approved/rejected",
   // #国家地区名单删除
   COUNTRY_DELETE: "country/delete",
+  // #国家地区名单新增
+  COUNTRY_ADD: "country/add",
+  // #查询国家地区Code
+  COUNTRY_CODE_LIST: "country/countryList",
 };

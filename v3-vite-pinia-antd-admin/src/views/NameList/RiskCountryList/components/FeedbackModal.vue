@@ -85,7 +85,9 @@ const handleClose = () => {
 // #导出为EXCEL
 const exportToExcel = () => {
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(feedback.value);
+    const header = ['行数', '列数', '字段名称', '错误信息'];
+    const wsData = [header, ...feedback.value.map((item: any) => Object.values(item))];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const date = formatDate(new Date());

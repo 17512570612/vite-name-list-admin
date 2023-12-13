@@ -1,6 +1,8 @@
 import { get, post } from "@/service";
 import { message } from "ant-design-vue";
 
+type Key = string | number;
+
 /** 公共函数<增删改查> */
 export function useCrud() {
   const list = ref();
@@ -14,12 +16,13 @@ export function useCrud() {
     remove: "",
   });
 
-  async function create(params: any) {
+  async function create<T>(params: T) {
     loading.value = true;
     try {
-      const res = await post<Response>(url.value.create, params);
+      const res = await post<response>(url.value.create, params);
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
+        query();
       }
     } catch (error) {
       console.log(error);
@@ -28,12 +31,15 @@ export function useCrud() {
     }
   }
 
-  async function remove(ids: any) {
+  async function remove(ids: Key | Key[]) {
     loading.value = true;
     try {
-      const res = await post<Response>(url.value.remove, { ids: ids });
+      const res = await get<response>(url.value.remove, {
+        ids: ids.toString(),
+      });
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
+        query();
       }
     } catch (error) {
       console.log(error);
@@ -42,10 +48,10 @@ export function useCrud() {
     }
   }
 
-  async function update(params: any) {
+  async function update<T>(params: T) {
     loading.value = true;
     try {
-      const res = await post<Response>(url.value.update, params);
+      const res = await post<response>(url.value.update, params);
       if (res.code === 200) {
         message.open({ type: "success", content: res.message });
       }
@@ -59,7 +65,7 @@ export function useCrud() {
   async function query(params = { pageNo: 1, pageSize: 10 }) {
     loading.value = true;
     try {
-      const res = await get<Response>(url.value.query, params);
+      const res = await get<response>(url.value.query, params);
       if (res.result.records) {
         list.value = res.result.records;
         pagination.value.current = res.result.pageNo;

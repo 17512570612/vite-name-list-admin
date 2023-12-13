@@ -1,5 +1,5 @@
 /** 返回体相关类型 */
-declare interface Response<T = any> {
+declare interface response<T = any> {
   code: number;
   status: string;
   message: string;

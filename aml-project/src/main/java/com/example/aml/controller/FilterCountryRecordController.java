@@ -150,11 +150,14 @@ public class FilterCountryRecordController {
      * @description: 删除数据
      */
     @GetMapping("/country/delete")
-    public Response deleteCountryFlow(Map<String, List<String>> params) {
+    public Response deleteCountryFlow(String ids) {
         try {
-            List<String> ids = params.get("ids");
-            if (ids.size() > 0) {
-                List<FilterCountryRecord> filterCountryRecords = counrtyService.listByIds(ids);
+            List<String> CountryIds = new ArrayList<>();
+            if(!ids.isEmpty()) {
+                CountryIds = Arrays.asList(ids.split(","));
+            }
+            if (CountryIds.size() > 0) {
+                List<FilterCountryRecord> filterCountryRecords = counrtyService.listByIds(CountryIds);
                 for (FilterCountryRecord filterCountryRecord : filterCountryRecords) {
                     if (filterCountryRecord.getMaintenanceState().equals("3") || filterCountryRecord.getMaintenanceState().equals("4"))
                         return Response.fail(500, "删除失败,审批中或已删除的数据无法删除", null);
@@ -224,7 +227,7 @@ public class FilterCountryRecordController {
     private void pass(FilterCountryRecordFlow filterCountryRecordFlow) {
         if (filterCountryRecordFlow.getOperate().equals("DELETE")) {
             filterCountryRecordFlow.setDelFlag("2");
-            filterCountryRecordFlow.setMaintenanceState("4");
+            filterCountryRecordFlow.setMaintenanceState("5");
         } else {
             filterCountryRecordFlow.setDelFlag("1");
             filterCountryRecordFlow.setMaintenanceState("1");
@@ -270,16 +273,16 @@ public class FilterCountryRecordController {
      * @description: 驳回
      */
     private void rejected(FilterCountryRecordFlow filterCountryRecordFlow) {
-       if (filterCountryRecordFlow.getOperate().equals("ADD")) {
-           countryFlowService.removeById(filterCountryRecordFlow.getId());
-       } else {
-           FilterCountryRecord filterCountryRecord = new FilterCountryRecord();
-           filterCountryRecordFlow.setOperate("ADD");
-           filterCountryRecordFlow.setMaintenanceState("1");
-           BeanUtils.copyProperties(filterCountryRecordFlow, filterCountryRecord);
-           counrtyService.saveOrUpdate(filterCountryRecord);
-           countryFlowService.removeById(filterCountryRecordFlow.getId());
-       }
+        if (filterCountryRecordFlow.getOperate().equals("ADD")) {
+            countryFlowService.removeById(filterCountryRecordFlow.getId());
+        } else {
+            FilterCountryRecord filterCountryRecord = new FilterCountryRecord();
+            filterCountryRecordFlow.setOperate("ADD");
+            filterCountryRecordFlow.setMaintenanceState("1");
+            BeanUtils.copyProperties(filterCountryRecordFlow, filterCountryRecord);
+            counrtyService.saveOrUpdate(filterCountryRecord);
+            countryFlowService.removeById(filterCountryRecordFlow.getId());
+        }
     }
 
     /**
@@ -300,11 +303,7 @@ public class FilterCountryRecordController {
     public ResponseEntity<InputStreamResource> downloadFile() throws IOException {
         File file = new File("/Users/wangyuxing/countryTemp.xls");
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(file.length())
-                .body(resource);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName()).contentType(MediaType.APPLICATION_OCTET_STREAM).contentLength(file.length()).body(resource);
     }
 
     /**
@@ -351,7 +350,7 @@ public class FilterCountryRecordController {
                     FilterCountryRecordFlow record = parseRow(row, rowIndex, errors);
                     // #去重
                     boolean existsInDatabase = checkIfRecordExistsInDatabase(record);
-                    if (record != null && !records.contains(record) && !existsInDatabase) {
+                    if (record != null && !records.contains(record) && !existsInDatabase && errors.size() == 0) {
                         record.setMaintenanceState("3");
                         record.setDelFlag("1");
                         String date = dateFormat.format(new Date());
@@ -360,7 +359,7 @@ public class FilterCountryRecordController {
                         // #将解析出来的数据保存到数据库
                         countryFlowService.saveOrUpdate(record);
                     } else {
-                        errors.add(new ExcelError(rowIndex + 1, 6, "英文名称", "该数据已存在"));
+                        errors.add(new ExcelError(rowIndex + 1, 6, "英文名称", "名称为空或已存在"));
                     }
                 }
             }

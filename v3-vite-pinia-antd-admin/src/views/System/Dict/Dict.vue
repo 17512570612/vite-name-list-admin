@@ -86,7 +86,7 @@ const updateModalStatus = (newVal: boolean) => {
 }
 
 const getDictItems = async (record: any) => {
-    const res: Response = await get(API.DICT_ITEM, record)
+    const res: response = await get(API.DICT_ITEM, record)
     dictItems.value = res.result;
 }
 

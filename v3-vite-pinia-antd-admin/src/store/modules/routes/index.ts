@@ -36,6 +36,7 @@ const filterAsyncRouter = (asyncRouterMap: any) => {
       title: route.name,
       icon: route.icon,
       parent: route.parent,
+      sort: route.sort,
     };
     if (route.component) {
       if (route.component === "Layout") {

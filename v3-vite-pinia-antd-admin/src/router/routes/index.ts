@@ -7,6 +7,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Layout,
+    redirect: "/index",
     meta: {
       parent: true,
       title: "首页",
@@ -14,7 +15,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: "",
+        path: "/index",
         name: "Home",
         component: () => import("@/views/Home/index.vue"),
       },
@@ -45,4 +46,14 @@ export const constantRoutes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: "/404",
+    name: "404",
+    component: () => import("@/views/error/404.vue"),
+  },
+  // {
+  //   path: "/:pathMatch(.*)*",
+  //   name: "404",
+  //   component: () => import("@/views/error/404.vue"),
+  // },
 ];

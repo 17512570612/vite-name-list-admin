@@ -8,8 +8,8 @@
                 </a-form-item>
             </a-col>
             <a-col :span="6">
-                <a-form-item label="风险国家类别">
-                    <a-select placeholder="请选择风险国家类别" allowClear />
+                <a-form-item label="国家类别">
+                    <a-select placeholder="请选择国家类别" allowClear />
                 </a-form-item>
             </a-col>
             <a-col :span="6" v-if="isExpand">
@@ -79,12 +79,14 @@
             </template>
         </a-table>
     </a-spin>
+    <ViewModal :isOpen="isOpen" :formData="formData" @update:modal-status="updateModalStatus" />
 </template>
 
 <script setup lang="ts">
 import { API } from '@/service'
 import { useCrud } from '@/hooks'
 import type { TableColumnsType } from 'ant-design-vue';
+import ViewModal from './components/ViewModal.vue'
 
 const { url, list, loading, queryForm, pagination, query } = useCrud();
 url.value.query = API.COUNTRY_LIST;
@@ -104,8 +106,15 @@ const handleExpand = () => {
     isExpand.value = !isExpand.value;
 }
 
+const isOpen = ref(false);
+const formData = ref();
 const handleView = (record: any) => {
-    console.log(record);
+    isOpen.value = true;
+    formData.value = record;
+}
+
+const updateModalStatus = (val: boolean) => {
+    isOpen.value = val;
 }
 
 const handlePagination = (page: any) => {

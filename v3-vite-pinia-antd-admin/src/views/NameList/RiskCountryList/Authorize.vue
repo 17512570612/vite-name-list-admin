@@ -8,8 +8,8 @@
                 </a-form-item>
             </a-col>
             <a-col :span="6">
-                <a-form-item label="风险国家类别">
-                    <a-select placeholder="请选择风险国家类别" allowClear />
+                <a-form-item label="国家类别">
+                    <a-select placeholder="请选择国家类别" allowClear />
                 </a-form-item>
             </a-col>
             <a-col :span="6" v-if="isExpand">
@@ -87,19 +87,8 @@
         <a-table bordered :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" rowKey="id" :columns="columns" :data-source="list" :pagination="pagination" @change="handlePagination">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.dataIndex === 'riskLevel'">
-                    <a-tag :color="record.riskLevel === 'SANCTION'
-                        ? 'red'
-                        : record.riskLevel === 'HIGH'
-                            ? 'orange'
-                            : 'blue'
-                        ">
-                        {{
-                            record.riskLevel === "SANCTION"
-                            ? "制裁类"
-                            : record.riskLevel === "HIGH"
-                                ? "高风险"
-                                : "其他"
-                        }}
+                    <a-tag :color="record.riskLevel === 'SANCTION' ? 'red' : record.riskLevel === 'HIGH' ? 'orange' : 'blue'">
+                        {{ record.riskLevel === 'SANCTION' ? '制裁类' : record.riskLevel === 'HIGH' ? '高风险' : '其他' }}
                     </a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'maintenanceState'">
@@ -141,6 +130,7 @@ const status: { [key: number]: string } = {
     4: "审批拒绝",
     5: "已删除",
 };
+
 
 const { url, loading, queryForm, list, pagination, query } = useCrud();
 const { selectedRowKeys, onSelectChange, approved, rejected } = useCommon();

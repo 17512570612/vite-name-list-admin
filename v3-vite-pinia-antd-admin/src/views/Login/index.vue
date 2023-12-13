@@ -4,23 +4,23 @@
             <div class="login-content">
                 <img class="logo-icon" src="../../assets/image/blacklogo.png" alt="" />
                 <h1 class="title">反洗钱名单监测系统</h1>
-                <a-form :model="formState" name="Login" :rules="rules" @finish="onSubmit">
+                <a-form :model="loginForm" name="Login" :rules="rules" @finish="onSubmit">
                     <a-form-item name="username">
-                        <a-input size="large" allow-clear v-model:value="formState.username" placeholder="请输入用户名">
+                        <a-input size="large" allow-clear v-model:value="loginForm.username" placeholder="请输入用户名">
                             <template #prefix>
                                 <user-outlined style="color: rgb(192, 192, 192)" />
                             </template>
                         </a-input>
                     </a-form-item>
                     <a-form-item name="password">
-                        <a-input-password size="large" v-model:value="formState.password" placeholder="请输入密码">
+                        <a-input-password size="large" v-model:value="loginForm.password" placeholder="请输入密码">
                             <template #prefix>
                                 <lock-outlined style="color: rgb(192, 192, 192)" />
                             </template>
                         </a-input-password>
                     </a-form-item>
                     <a-form-item name="remember">
-                        <a-checkbox v-model:checked="formState.remember">记住密码</a-checkbox>
+                        <a-checkbox v-model:checked="loginForm.remember">记住密码</a-checkbox>
                     </a-form-item>
                     <a-form-item>
                         <a-button size="large" block type="primary" html-type="submit">登录</a-button>
@@ -37,7 +37,7 @@ import { Form } from "ant-design-vue";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store";
 import { useCommon } from "@/hooks"
-import { encryptString, decryptString } from "@/utils/encryption";
+import { encryptString, decryptString } from "@/utils";
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 
 interface FormState {
@@ -46,7 +46,7 @@ interface FormState {
     remember: boolean;
 }
 
-const formState = reactive<FormState>({
+const loginForm = reactive<FormState>({
     username: "",
     password: "",
     remember: false,
@@ -59,7 +59,7 @@ const rules = reactive({
 
 const router = useRouter();
 const userStore = useUserStore();
-const { validate } = Form.useForm(formState, rules);
+const { validate } = Form.useForm(loginForm, rules);
 
 const isLoading = ref<boolean>(false);
 
@@ -68,7 +68,7 @@ const onSubmit = async () => {
     try {
         await Promise.all([validate()]);
         isLoading.value = true;
-        const res = await post<Response<UserApi.UserInfo>>("login", formState);
+        const res = await post<response<UserApi.UserInfo>>("login", loginForm);
         if (res.code === 200) {
             message.success("登录成功");
             router.push("/");
@@ -86,8 +86,8 @@ const onSubmit = async () => {
 };
 
 const shouldRememberPassword = (): void => {
-    if (formState.remember) {
-        localStorage.setItem("USER", encryptString(JSON.stringify(formState)));
+    if (loginForm.remember) {
+        localStorage.setItem("USER", encryptString(JSON.stringify(loginForm)));
     } else {
         localStorage.removeItem("USER");
     }
@@ -96,9 +96,9 @@ const shouldRememberPassword = (): void => {
 onMounted(() => {
     if (localStorage.getItem("USER")) {
         const user = JSON.parse(decryptString(localStorage.getItem("USER") as string));
-        formState.remember = Boolean(user);
-        formState.username = user.username;
-        formState.password = user.password;
+        loginForm.remember = Boolean(user);
+        loginForm.username = user.username;
+        loginForm.password = user.password;
     }
 });
 </script>

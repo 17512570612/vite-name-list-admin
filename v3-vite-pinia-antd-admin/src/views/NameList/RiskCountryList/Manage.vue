@@ -8,13 +8,13 @@
                 </a-form-item>
             </a-col>
             <a-col :span="6">
-                <a-form-item label="风险国家类别">
-                    <a-select placeholder="请选择风险国家类别" allowClear />
+                <a-form-item label="国家类别">
+                    <a-select placeholder="请选择国家类别" allowClear :options="store.$state.dict['RISK_LEVEL']" />
                 </a-form-item>
             </a-col>
             <a-col :span="6" v-if="isExpand">
                 <a-form-item label="国别代码">
-                    <a-select placeholder="请选择国别码" allowClear></a-select>
+                    <a-select placeholder="请选择国别码" :fieldNames="{ label: 'iso3countrycode', value: 'iso3countrycode' }" allowClear :options="countryAllCode"></a-select>
                 </a-form-item>
             </a-col>
             <a-col :span="6" v-if="isExpand">
@@ -45,7 +45,7 @@
                         </template>
                         查询
                     </a-button>
-                    <a-button class="ml-10">
+                    <a-button class="ml-10" @click="reset">
                         <template #icon>
                             <ReloadOutlined />
                         </template>
@@ -67,7 +67,7 @@
     </a-form>
     <div class="isExpand flex jc-sb mb-20">
         <div class="flex">
-            <a-button class="mr-10">
+            <a-button class="mr-10" @click="create">
                 <template #icon>
                     <PlusOutlined />
                 </template>
@@ -107,47 +107,45 @@
         </a-popconfirm>
     </div>
     <a-spin :spinning="loading">
-        <a-table bordered :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" rowKey="id" :columns="columns" :data-source="list" :pagination="pagination" @change="handlePagination">
+        <a-table bordered :row-selection="rowSelection" rowKey="id" :columns="columns" :data-source="list" :pagination="pagination" @change="handlePagination">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.dataIndex === 'riskLevel'">
-                    <a-tag :color="record.riskLevel === 'SANCTION'
-                        ? 'red'
-                        : record.riskLevel === 'HIGH'
-                            ? 'orange'
-                            : 'blue'
-                        ">
-                        {{
-                            record.riskLevel === "SANCTION"
-                            ? "制裁类"
-                            : record.riskLevel === "HIGH"
-                                ? "高风险"
-                                : "其他"
-                        }}
+                    <a-tag :color="record.riskLevel === 'SANCTION' ? 'red' : record.riskLevel === 'HIGH' ? 'orange' : 'blue'">
+                        {{ record.riskLevel === 'SANCTION' ? '制裁类' : record.riskLevel === 'HIGH' ? '高风险' : '其他' }}
                     </a-tag>
                 </template>
                 <template v-if="column.dataIndex === 'maintenanceState'">
                     {{ status[record.maintenanceState] }}
                 </template>
                 <template v-if="column.dataIndex === 'delFlag'">
-                    {{ record.delFlag === "1" ? "未删除" : "已删除" }}
+                    <p v-if="record.delFlag === '1'">未删除</p>
+                    <p v-else>已删除</p>
                 </template>
                 <template v-if="column.dataIndex === 'startDate'">
                     {{ record.startDate || "-" }}
                 </template>
                 <template v-if="column.dataIndex === 'action'">
-                    <a-button class="p-0" type="link">编辑</a-button>
+                    <a-button class="p-0" v-if="record.delFlag == '1'" type="link" @click="edit(record)">编辑</a-button>
+                    <a-popconfirm title="确定删除该条信息吗?" v-if="record.delFlag == '1'" ok-text="确定" cancel-text="取消" @confirm="remove(record.id)">
+                        <a-button class="p-0 ml-10" type="link">删除</a-button>
+                    </a-popconfirm>
                 </template>
             </template>
         </a-table>
     </a-spin>
-    <FeedbackModal :isOpen="isOpen" :feedback="feedback" :code="code" @update:modal-status="updateModalStatus" />
+    <FeedbackModal :isOpen="feedbackShow" :feedback="feedback" :code="code" @update:modal-status="updateModalStatus" />
+    <CountryModal :isOpen="isOpen" :formData="formData" :countryCode="countryAllCode" @update:modal-status="updateModalStatus"></CountryModal>
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from "@/store";
 import { useCrud, useCommon } from "@/hooks";
 import { API, post, download } from "@/service";
 import type { TableColumnsType } from 'ant-design-vue';
+import CountryModal from "./components/CountryModal.vue";
 import FeedbackModal from "./components/FeedbackModal.vue";
+
+const store = useAppStore();
 
 const columns: TableColumnsType = [
     { title: "英文名称", dataIndex: "enName", ellipsis: true },
@@ -157,7 +155,7 @@ const columns: TableColumnsType = [
     { title: "生效日期", dataIndex: "startDate", align: "center", ellipsis: true },
     { title: "上传日期", dataIndex: "uploadTime", align: "center", ellipsis: true },
     { title: "删除状态", dataIndex: "delFlag", ellipsis: true, align: "center", width: 150 },
-    { title: "操作", dataIndex: "action", align: "center", width: 100 },
+    { title: "操作", dataIndex: "action", align: "center" },
 ];
 
 const status: { [key: number]: string } = {
@@ -169,7 +167,7 @@ const status: { [key: number]: string } = {
 };
 
 const { url, list, loading, queryForm, pagination, query, remove } = useCrud();
-const { selectedRowKeys, onSelectChange } = useCommon();
+const { countryAllCode, selectedRowKeys, rowSelection, getCountryCode } = useCommon();
 
 url.value.query = API.COUNTRY_LIST;
 url.value.remove = API.COUNTRY_DELETE;
@@ -179,10 +177,13 @@ const handleExpand = () => {
     isExpand.value = !isExpand.value;
 };
 
-const fileList: any = ref([]);
-const uploading = ref(false);
+const reset = () => {
+    queryForm.value = { pageNo: 1, pageSize: 10 };
+}
 
 // #上传文件前
+const fileList: any = ref([]);
+const uploading = ref(false);
 const beforeUpload = (file: any) => {
     fileList.value = [file];
     return false;
@@ -191,20 +192,19 @@ const beforeUpload = (file: any) => {
 // #上传文件
 const code = ref(200);
 const feedback = ref([]);
-const isOpen = ref(false);
-
+const feedbackShow = ref(false);
 const handleUpload = async () => {
     loading.value = true;
     try {
         const file = new FormData();
         fileList.value.forEach((f: any) => file.append("file", f));
-        const res: any = await post(API.COUNTRY_UPLOAD, file);
+        const res: response = await post(API.COUNTRY_UPLOAD, file);
         fileList.value = [];
-        isOpen.value = true;
+        feedbackShow.value = true;
         code.value = res.code;
         feedback.value = res.result;
     } catch (error: any) {
-        console.log(error);
+        console.error('上传文件失败：', error);
     } finally {
         loading.value = false;
     }
@@ -228,8 +228,22 @@ const downloadFile = async () => {
     });
 };
 
+const isOpen = ref(false);
+const formData = ref();
+
+const create = () => {
+    formData.value = {};
+    isOpen.value = true;
+}
+
+const edit = (item: any) => {
+    isOpen.value = true;
+    formData.value = item;
+}
+
 // #关闭反馈窗口
 const updateModalStatus = (newVal: boolean) => {
+    feedbackShow.value = newVal;
     isOpen.value = newVal;
 };
 
@@ -239,7 +253,10 @@ const handlePagination = (page: any) => {
     query(queryForm.value);
 };
 
-onMounted(() => query());
+onMounted(() => {
+    query();
+    getCountryCode();
+});
 </script>
 
 <style scoped>
